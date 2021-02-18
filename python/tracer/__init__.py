@@ -29,15 +29,15 @@ class Result(object):
 
 class QueryResult(Result):
     """The result of a query command."""
-    props=['batt_voltage', 'pv_voltage', 'load_amps', 'batt_overdischarge_voltage', 'batt_full_voltage', 'load_on', 'load_overload', 'load_short', 'batt_overload', 'batt_overdischarge', 'batt_full', 'batt_charging', 'batt_temp', 'charge_current']
+    props=['bat1_voltage', 'bat2_voltage', 'solar_voltage', 'batt_overdischarge_voltage', 'batt_full_voltage', 'load_on', 'load_overload', 'load_short', 'batt_overload', 'batt_overdischarge', 'batt_full', 'batt_charging', 'batt_temp', 'charge_current']
     def decode(self, data):
         """Decodes the query result, storing results as fields"""
 	if len(data) < 23:
 	    print "Not enough data. Need 23 bytes, got %d" % len(data)
-        self.batt_voltage = self.to_float(data[0:2])
-        self.pv_voltage = self.to_float(data[2:4])
+        self.bat1_voltage = self.to_float(data[0:2])
+        self.bat2_voltage = self.to_float(data[2:4])
         # [4:2] reserved; always 0
-        self.load_amps = self.to_float(data[6:8])
+        self.solar_voltage = self.to_float(data[6:8])
         self.batt_overdischarge_voltage = self.to_float(data[8:10])
         self.batt_full_voltage = self.to_float(data[10:12])
         self.load_on = data[12] != 0
@@ -48,7 +48,8 @@ class QueryResult(Result):
         self.batt_overdischarge = data[17] != 0
         self.batt_full = data[18] != 0
         self.batt_charging = data[19] != 0
-        self.batt_temp = data[20] - 30;
+        self.batt_temp = data[8] - 35;
+        #self.batt_temp = data[20] - 30;
         self.charge_current = self.to_float(data[21:23])
 
 class Command(object):
